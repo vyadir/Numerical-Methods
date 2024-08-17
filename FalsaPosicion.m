@@ -25,7 +25,7 @@ function [MFP] = FalsaPosicion(f, x0, x1, iterMax, tol)
             if (iter > iterMax)
                 break;
             end 
-            xi = x1-((double(subs(f, x, fx1)) * (x1-x0))/(double(subs(f, x, fx1)) - double(subs(f, x, fx0))));
+            xi = x1 - (fx1 * (x1 - x0)) / (fx1 - fx0);
             fxi = double(subs(f, x, xi)); % evalúo la función f en xi
             if fxi == 0
                 break;
