@@ -3,7 +3,7 @@ pkg load symbolic;
 format long g;
 warning off all;
 
-% Definición de la función Biseccion
+% Definición de la función falsa posicion
 function [MFP] = FalsaPosicion(f, x0, x1, iterMax, tol)
     %Parametros de entrada
     %f: función en términos de x
@@ -24,8 +24,8 @@ function [MFP] = FalsaPosicion(f, x0, x1, iterMax, tol)
         while errA > tol
             if (iter > iterMax)
                 break;
-            end
-            xi = (x0 + x1) / 2; % FALTA CAMBIAR
+            end 
+            xi = x1-((double(subs(f, x, fx1)) * (x1-x0))/(double(subs(f, x, fx1)) - double(subs(f, x, fx0))));
             fxi = double(subs(f, x, xi)); % evalúo la función f en xi
             if fxi == 0
                 break;
@@ -61,6 +61,6 @@ syms x;
 f = x^2 - 2;
 [MFP] = FalsaPosicion(f, 1, 3, 20, 0.0000005);
 % Mostrar los resultados
-disp('Resultados de la Bisección:');
+disp('Resultados de la falsa posición:');
 disp('Iteración   Aproximación   Error');
 disp(MFP);
