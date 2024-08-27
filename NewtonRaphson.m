@@ -1,10 +1,4 @@
-% Configuracion necesaria
-pkg load symbolic;
-format long g;
-warning off all;
-
-% Definición de la función Newton-Raphson
-function [mNR] = NewtonRaphson(f, x0, iterMax, tol)
+function [mNR, tiempo] = NewtonRaphson(f, x0, iterMax, tol)
     %Parametros de entrada
     %f: función en términos de x
     %x0: valor inicial
@@ -16,7 +10,10 @@ function [mNR] = NewtonRaphson(f, x0, iterMax, tol)
     errA = tol + 1;
     fx0 = double(subs(f, x, x0)); % evalúo la función f en x0
     dfx = diff(f, x); % cálculo de la derivada de f
-    while (errA > tol)
+    mNR = []; % Inicializar la matriz de resultados
+    % Iniciar la medición del tiempo
+    tic;
+    while (errA > tol && iter <= iterMax)
         if (iter > iterMax)
             break;
         endif
@@ -35,17 +32,15 @@ function [mNR] = NewtonRaphson(f, x0, iterMax, tol)
             errA = abs(xi - x0); % error inicial para la primera iteración
         endif
         mNR(iter, 3) = errA; % en la fila iter de la columna 3 de la matriz mNR se asigna el error absoluto
+        % Condición de parada por precisión extrema
+        if errA < 10^(-100)
+            break;
+        endif
         % Actualizo x0 para la siguiente iteración
         x0 = xi;
         fx0 = fxi;
         iter = iter + 1;
     endwhile
+    % Detener la medición del tiempo
+    tiempo = toc;
 endfunction
-
-% Prueba de la función Newton-Raphson con un ejemplo para sqrt(2)
-syms x;
-f = x^2 - 2;
-[mNR] = NewtonRaphson(f, 1, 20, 0.0000005);
-disp('Resultados del método de Newton-Raphson:');
-disp('Iteración   Aproximación   Error');
-disp(mNR);

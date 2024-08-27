@@ -1,10 +1,4 @@
-% Configuracion necesaria
-pkg load symbolic;
-format long g;
-warning off all;
-
-% Definición de la función Biseccion
-function [mBis] = Biseccion(f, x0, x1, iterMax, tol)
+function [mBis, tiempo] = Biseccion(f, x0, x1, iterMax, tol)
     %Parametros de entrada
     %f: función en términos de x
     %x0: inicio del intervalo
@@ -12,16 +6,17 @@ function [mBis] = Biseccion(f, x0, x1, iterMax, tol)
     %iterMax: cantidad máxima de iteraciones por hacer
     %tol: tolerancia del error como criterio de parada
     %mBis: es la matriz de retorno que contiene la iteracion, la aproximación y el error absoluto
-
     syms x;
     iter = 1;
     errA = tol + 1;
     fx0 = double(subs(f, x, x0)); % evalúo la función f en x0
     fx1 = double(subs(f, x, x1)); % evalúo la función f en x1
+    % Iniciar la medición del tiempo
+    tic;
     % Verifico si el método se puede aplicar
     if fx0 * fx1 < 0
         mBis = zeros(iterMax, 3); % Inicialización de la matriz de resultados con ceros
-        while errA > tol
+        while errA > tol && iter <= iterMax
             if (iter > iterMax)
                 break;
             end
@@ -46,6 +41,10 @@ function [mBis] = Biseccion(f, x0, x1, iterMax, tol)
                 errA = abs(x1 - x0); % error inicial para la primera iteración
             end
             mBis(iter, 3) = errA; % en la fila iter de la columna 3 de la matriz mBis se asigna el error
+            % Condición de parada por precisión extrema
+            if errA < 10^(-100)
+                break;
+            end
             iter = iter + 1;
         end
         % Eliminar filas no utilizadas de la matriz
@@ -54,13 +53,6 @@ function [mBis] = Biseccion(f, x0, x1, iterMax, tol)
         disp('No se puede aplicar el método');
         mBis = [];
     end
+    % Detener la medición del tiempo
+    tiempo = toc;
 end
-
-% Prueba de la función Biseccion con un ejemplo raiz de 2
-syms x;
-f = x^2 - 2;
-[mBis] = Biseccion(f, 1, 3, 20, 0.0000005);
-% Mostrar los resultados
-disp('Resultados de la Bisección:');
-disp('Iteración   Aproximación   Error');
-disp(mBis);
