@@ -1,1 +1,1 @@
-# This repository contains scripts for numerical analysis methods.
+# This repository contains scripts for first numerical analysis methods project.
